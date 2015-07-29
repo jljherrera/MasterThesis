@@ -1,0 +1,4 @@
+asn1Parser pkInt.asn
+
+gcc -o encode encode.c  pkInt_asn1_tab.c `pkg-config libtasn1 --libs`
+

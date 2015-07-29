@@ -1,0 +1,17 @@
+PKInt { }
+
+DEFINITIONS EXPLICIT TAGS ::=
+
+BEGIN
+
+PublicKey ::= SEQUENCE {
+  noVars    NumericString,
+  noPoly    NumericString,
+  polys     SEQUENCE OF Polynomial
+}
+
+Polynomial ::= SEQUENCE {
+  intData   SEQUENCE OF NumericString
+}
+
+END

@@ -1,0 +1,104 @@
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+
+/home/users/jherrera/groebnerbasis/gb.py in <module>()
+    259 startTime = time.time()
+    260 #gb = groebner_basis( data.ideal )               # Computes last Groebner Basis
+
+--> 261 gb = groebner_basis_first_finished( data.ideal, {'heuristic':False}, {'heuristic': True})
+    262 endTime   = time.time()                         # when "polys" = 0
+    263 acumm += (endTime - startTime)
+
+/usr/lib/python2.7/site-packages/polybori/parallel.pyc in groebner_basis_first_finished(I, *l)
+    258     it = pool.imap_unordered(_calculate_gb_with_keywords,
+    259                              [(I, kwds) for kwds in l])
+--> 260     res=it.next()
+    261
+    262     pool.terminate()
+
+/usr/lib64/python2.7/multiprocessing/pool.pyc in next(self, timeout)
+    587         if success:
+    588             return value
+--> 589         raise value
+    590
+    591     __next__ = next                    # XXX
+
+ValueError: Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/polybori/parallel.py", line 144, in _calculate_gb_with_keywords
+    return groebner_basis(I, **kwds_as_single_arg)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 174, in __call__
+    return self.f(**complete_dict)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 174, in __call__
+    return self.f(**complete_dict)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 174, in __call__
+    return self.f(**complete_dict)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 226, in wrapper
+    local_symbols.iteritems() if k in pre_args]))
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 362, in other_ordering_pre
+    I=groebner_basis([new_ring(poly) for poly in I],**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 174, in __call__
+    return self.f(**complete_dict)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 174, in __call__
+    return self.f(**complete_dict)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 174, in __call__
+    return self.f(**complete_dict)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 174, in __call__
+    return self.f(**complete_dict)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 227, in wrapper
+    I=f(I,**kwds)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 570, in groebner_basis
+    return call_algorithm(I)
+  File "/usr/lib/python2.7/site-packages/polybori/gbcore.py", line 558, in call_algorithm
+    **filter_newstyle_options(implementation, **impl_options))
+  File "/usr/lib/python2.7/site-packages/polybori/nf.py", line 307, in symmGB_F2_python
+    res=strat.faugere_step_dense(v)
+ValueError: Built-in matrix-size exceeded!
+
+WARNING: Failure executing file: <gb.py>
+

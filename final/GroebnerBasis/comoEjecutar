@@ -1,0 +1,5 @@
+1. Entrar a PolyBoRi: ipbori
+2. Ejecutar script:   run gb.py
+3. Dar archivo con PK
+4. Dar archivo que contendra la base de Groebner
+Nota: Se crea un archivo "forPB" que es la imagen de PK en formato PolyBoRi para ser cargado y que se pueda calcular la base de Groebner

@@ -1,0 +1,6 @@
+asn1Parser pkInt.asn
+
+gcc -o decode decode.c  pkInt_asn1_tab.c `pkg-config libtasn1 --libs`
+
+Por la introduccion de la biblioteca para numeros grandes GMP, compilar asi:
+gcc -o decode decode.c  pkInt_asn1_tab.c `pkg-config libtasn1 --libs` -L/gmp_install/lib -lgmp
