@@ -9,7 +9,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <ginac/ginac.h>
-//#include <time.h>
+#include <fstream>
 using namespace std;
 using namespace GiNaC;
 
@@ -188,7 +188,6 @@ ex genpolyUOV(const symbol & (* var)(int), unsigned int o,\
 		}
 	}
 	else{
-		//clock_t tStart = clock();
 		for ( i=0; i<v; i++ ){		// Products vars. vinegar times vinegar+oil
 			for ( j=0; j<n; j++ ){
 				aux += genquadterm( var(i), var(j), ord );
@@ -196,7 +195,6 @@ ex genpolyUOV(const symbol & (* var)(int), unsigned int o,\
 			polyq += aux;
 			aux    = 0;
 		}
-		//cout << "Time taken: " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
 	}
 	for ( i=0; i<n; i++ ){		// Linear terms
 		polyl += genlinterm( var(i), ord );
@@ -381,6 +379,35 @@ void Sinv(matrix MsInv, matrix vs, matrix ss, unsigned int n,\
 	}
 }
 
+void evalpolynum(ex poly, const symbol & (* var)(int), matrix & assig,\
+		ex & y, unsigned int n, unsigned int ord)
+/* Computes the image "y" of "poly" in "assig". "poly" has "n" variables
+ * of type "var" and this function makes sure the result is in F_ord.
+ * REMARK: This function considers that "assig" has only numbers!!! */
+{
+	exmap m;
+	size_t	i;
+
+	for ( i=0; i<n; i++ ){
+		m[ var(i) ] = assig(i,0);
+	}
+	poly = poly.subs(m, subs_options::no_pattern);
+	poly = expand(poly);
+	y = ret2order(y, ord);	// Just a constant
+}
+
+void evpolyvectnum(ex * polyvect, const symbol & (* var)(int),\
+		matrix & assig, ex * y, unsigned int n, unsigned int o,\
+		unsigned int ord)
+/* Computes the image "y" of "polyvect" in "assig". "polyvect" has "n"
+ * variables of type "var" and this function makes sure the result is in F_ord.
+ * REMARK: This function considers that "assig" has only numbers!!! */
+{
+	for ( size_t i=0; i<o; i++ ){
+		evalpolynum(polyvect[i], var, assig, y[i], n, ord);
+		}
+}
+
 void evalpoly(ex poly, const symbol & (* var)(int), matrix & assig,\
 		ex & y, unsigned int n, unsigned int ord)
 /* Computes the image "y" of "poly" in "assig". "poly" has "n" variables
@@ -402,12 +429,11 @@ void evalpoly(ex poly, const symbol & (* var)(int), matrix & assig,\
 		ls1.remove_all();
 		ls2.remove_all();
 	}
-	y = expand(poly);
-	if ( y.nops() == 0 ){
-		y = ret2order(y, ord);	// Just a constant
+	if ( poly.nops() == 0 ){
+		y = ret2order(poly, ord);	// Just a constant
 	}
 	else{
-		y = poly2order(y, ord);
+		y = poly2order(poly, ord);
 	}
 }
 
@@ -515,4 +541,94 @@ unsigned int solvesyseq(ex * polyvect, ex * img, const symbol & (* var)(int),\
 		cont = 0;	// Result found
 	}
 	return k;
+}
+
+unsigned int writekeys(const char * PKFile, const char * SKFile,\
+		const char * MVFile, const char * MInvFile, ex * PK,\
+		ex * SK, matrix Ms, matrix vs, matrix MInv,\
+		unsigned int n, unsigned int o, unsigned int ord)
+/* Writes in "PKFile", the public key "PK", in "SKFile" the secret key
+ * "SK", in "MVFile" the matrix and vector "Ms" and "vs" of the affine
+ * transformation and in "MInvFile" the inverse matrix "MInv". This
+ * function returns a number different from zero if there was an error. */
+{
+	size_t		i, j;
+	ofstream	outfile;
+	const char	*sp;
+
+	/* Write public polynomials */
+	outfile.open(PKFile);
+	if ( outfile.is_open() )
+	{
+		if ( ord != 2 ) outfile << ord << endl;
+		for ( i=0; i<o; i++ ){
+			outfile << PK[i] << endl;
+		}
+		outfile.close();
+	}
+	else{
+		cout << "Unable to open file for Public Key";
+		return 1;
+	}
+
+	/* Write secret polynomials */
+	outfile.open(SKFile);
+	if ( outfile.is_open() )
+	{
+		if ( ord != 2 ) outfile << ord << endl;
+		for ( i=0; i<o; i++ ){
+			outfile << SK[i] << endl;
+		}
+		outfile.close();
+	}
+	else{
+		cout << "Unable to open file for Secret Key";
+		return 2;
+	}
+
+	/* Write Matrix and Vector of affine transformation */
+	outfile.open(MVFile);
+	if ( outfile.is_open() )
+	{
+		for ( i=0; i<n; i++ ){
+			sp = " ";
+			for ( j=0; j<n; j++ ){
+				if ( j == (n-1) ) sp = "";
+				outfile << Ms(i,j) << sp;
+			}
+			outfile << endl;
+		}
+		sp = " ";
+		for ( i=0; i<n; i++ ){
+			if ( i == (n-1) ) sp = "";
+			outfile << vs(i,0) << sp;
+		}
+		outfile << endl;
+		outfile.close();
+	}
+	else{
+		cout << "Unable to open file for matrix and vector of affine transf.";
+		return 3;
+	}
+
+	/* Write inverse Matrix (affine transformation) */
+	outfile.open(MInvFile);
+	if ( outfile.is_open() )
+	{
+		for ( i=0; i<n; i++ ){
+			sp = " ";
+			for ( j=0; j<n; j++ ){
+				if ( j == (n-1) ) sp = "";
+				outfile << MInv(i,j) << sp;
+			}
+			outfile << endl;
+		}
+		outfile.close();
+	}
+	else{
+		cout << "Unable to open file for inverse matrix of affine transf.";
+		return 4;
+	}
+
+	return 0;
 }

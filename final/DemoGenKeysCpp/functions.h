@@ -38,11 +38,18 @@ void genrndvector(matrix &, unsigned int, unsigned int);
 void S(matrix &, matrix &, const symbol & (*)(int),\
 		unsigned int, unsigned int, matrix &);
 void Sinv(matrix, matrix, matrix, unsigned int, unsigned int, matrix &);
+void evalpolynum(ex, const symbol & (*)(int), matrix &,\
+		ex &, unsigned int, unsigned int);
+void evpolyvectnum(ex *, const symbol & (*)(int),\
+		matrix &, ex *, unsigned int, unsigned int,	unsigned int);
 void evalpoly(ex, const symbol & (*)(int), matrix &,\
 		ex &, unsigned int, unsigned int);
 void evalpolyvect(ex *, const symbol & (*)(int), matrix &,\
 		ex *, unsigned int, unsigned int, unsigned int);
 unsigned int solvesyseq(ex *, ex *, const symbol & (*)(int),\
 		matrix &, unsigned int, unsigned int, unsigned int);
+unsigned int writekeys(const char *, const char *, const char *,\
+		const char *, ex *,	ex *, matrix, matrix, matrix,\
+		unsigned int, unsigned int, unsigned int);
 
 #endif /* SOURCE_FUNCTIONS_H_ */

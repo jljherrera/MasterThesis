@@ -25,6 +25,10 @@ int main(int argc, char *argv[])
 	size_t  		i;
 	ex				poly, subpoly;
 	numeric			xp, yp;	// xp*a + yp*b = gcd(a,b)
+	const char * PKFile   = "PK.txt";	// Name of public key file
+	const char * SKFile   = "SK.txt";	// Name of secret key file
+	const char * MVFile   = "MsVs.txt";	// Name of matrix and vector file (A.T.)
+	const char * MInvFile = "MInv.txt";	// Name of inverse matrix file
 
 	rc = lineparams(argc, argv, &n, &ord);
 	if ( rc != 0 )
@@ -49,21 +53,30 @@ int main(int argc, char *argv[])
 	matrix  preimg(n, 1);		// To store pre-image of a desired image
 
 	cout << "Number of oil variables: " << o <<\
-			". Number of vinegar variables: " << v << endl;
+			". Number of vinegar variables: " << v << "\n" << endl;
 
 	/* Generate UOV Polynomials */
+	clock_t tStart = clock();
 	genpolyvectUOV(a, o, v, ord, PiUOV);	// Not using returned pointer
-	printvec("UOV polynomials:", PiUOV, o);
+	cout << "Time to generate PiUOV: " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
+	printvec("Secret polynomials:", PiUOV, o);
 
 	/* Generate matrix and vector for affine transformation */
 	genrndmatrix(Ms, MsInv, n, ord);
+	printmat("Ms matrix:", Ms, n, n);
+	printmat("Ms inverse matrix:", MsInv, n, n);
 	genrndvector(vs, n, ord);
+	printmat("vs vector:", vs, n, 1);
 
 	/* Generate Public Polynomials */
+	tStart = clock();
 	S(Ms, vs, x, n, ord, aux);
-	//printmat("S:", aux, n, 1);
+	cout << "Time to generate A.T.: " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
+	printmat("A.T.:", aux, n, 1);
 
+	tStart = clock();
 	evalpolyvect(PiUOV, a, aux, Pi, n, o, ord);
+	cout << "Time to generate Pi: " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
 	printvec("Public polynomials:", Pi, o);
 
 	/* Compute pre-image for a desired image */
@@ -72,16 +85,28 @@ int main(int argc, char *argv[])
 	}
 	printvec("Desired image for Pi:", y, o);
 
+	tStart = clock();
 	rc = solvesyseq(PiUOV, y, a, preimg, n, o, ord);
+	cout << "Time to solve system of eqs.: " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
 	cout << "Result found in " << rc << " tries." << endl;
 	printmat("Pre-image in 'a' variables:", preimg, n, 1);
-	evalpolyvect(PiUOV, a, preimg, y, n, o, ord);
+	tStart = clock();
+	evpolyvectnum(PiUOV, a, preimg, y, n, o, ord);
+	cout << "Time to compute PiUOV(a): " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
 	printvec("PiUOV evaluated in 'a'  :", y, o);
 
+	tStart = clock();
 	Sinv(MsInv, vs, preimg, n, ord, aux);
+	cout << "Time to generate inverse A.T.: " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
 	printmat("Pre-image in 'x' variables:", aux, n, 1);
-	evalpolyvect(Pi, x, aux, y, n, o, ord);
+	tStart = clock();
+	evpolyvectnum(Pi, x, aux, y, n, o, ord);
+	cout << "Time to compute Pi(x): " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
 	printvec("Pi evaluated in 'x'  :", y, o);
+
+	/* Write info generated in files */
+	rc = writekeys(PKFile, SKFile, MVFile, MInvFile, Pi, PiUOV,\
+			Ms, vs, MsInv, n, o, ord);
 
 	return 0;
 }
