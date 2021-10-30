@@ -5,4 +5,4 @@ of an authentication and stream cipher based in multivariate quadratic polynomia
 
 The code is not optimized, but it rather shows the proof of concept working.
 
-Details on how to run this programs can be found in http://computacion.cs.cinvestav.mx/~jherrera/
+Details on how to run this programs can be found in https://www.cs.cinvestav.mx/tesisgraduados/2015/ResumenJoseHerrera.html
